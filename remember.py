@@ -1,4 +1,6 @@
 import sys
+import numpy as np
+import pickle
 from random import randint
 
 def normalize(line):
@@ -30,8 +32,19 @@ def main():
             if len(line)> 0:
                 second_sentences.append(normalize(line))
 
+    if len(second_sentences) != len(first_sentences):
+        print("The number of sentences in both files need to be the same.")
+        return
+
+    probabilities = []
+    indexes = []
+    for i in range(0, len(first_sentences)):
+        probabilities.append(100)
+        indexes.append(i)
+
     while(True):
-        index = randint(0, len(first_sentences)-1)
+        pick_index = np.random.choice(indexes, 1, probabilities)
+        index = pick_index[0]
         a_sentence = first_sentences[index]
         b_sentence = second_sentences[index]
         a = a_sentence
@@ -49,8 +62,10 @@ def main():
 
         if response.replace(' ', '') == b.replace(' ', ''):
             correct += 1
+            probabilities[index] -= 1
             print("correct!")
         else:
+            probabilities[index] += 1
             wrong += 1
             print(b)
 
